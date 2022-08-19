@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Survive</title>
+
+    <style media="screen">
+      * {
+        font-family: Trebuchet;
+      }
+
+      canvas{
+        background-color: #007d4f;
+        border:3px solid black;
+      }
+
+      #user {
+        background-color: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display:none"><img src="file:///Users/Evanebenezer/Desktop/Survive%20User.png" id="user"></div>
+
+    <canvas id="canvas"></canvas>
+    <script>
+        // create entity
+        function Entity(skin, speed, health, width, height, x, y) {
+            this.skin = skin // entity skin
+            this.speed = speed // entity speed
+            this.health = health // entity health
+            this.width = width // entity width
+            this.height = height // entity height
+            this.x = x // entity x
+            this.y = y // entity y
+        }
+
+        window.onload = function() {
+          // user start x, y position
+          var x = 150
+          var y = 150
+
+          // create user
+          skin = document.querySelector('#user')
+          let user = new Entity(skin, 5, 100, 165, 100, x, y)
+
+          // canvas
+          var c = document.getElementById('canvas')
+          c.width = 1080
+          c.height = 1080
+          var ctx = c.getContext('2d')
+          //
+          var theta
+
+          // mouse rotation
+          window.addEventListener('mousemove', function(e) {
+            // "canvas" #2
+            ctx.clearRect(0, 0, 1080, 1080)
+            ctx.fillStyle = '#007d4f'
+            ctx.fillRect(0, 0, 1080, 1080)
+
+            // mouse coordinates
+            var mouseX = user.x - e.x
+            var mouseY = user.y - e.y
+            var deg = 180 / Math.PI
+
+
+            // find theta
+            if(mouseX < 0){
+              theta = Math.atan(mouseY/mouseX)
+            }else if(mouseX > 0){
+              theta = Math.atan(mouseY/mouseX) + Math.PI
+            }
+
+            ctx.save()
+            ctx.translate(user.x, user.y)
+            ctx.rotate(theta + 90 * deg)
+            ctx.drawImage(skin, -user.width/2, -user.height/2, user.width, user.height)
+            //origin (in comment)
+            /*
+            //origin
+            ctx.fillStyle = 'red'
+            ctx.fillRect(-5, -5, 10, 10)
+            */
+            ctx.restore()
+
+
+          })
+          //mouse onclick
+          window.addEventListener('click', function(){
+            window.addEventListener('mousemove', function() {
+              user.x += Math.cos(theta) * user.speed
+              user.y += Math.sin(theta) * user.speed
+            })
+          })
+        }
+
+    </script>
+  </body>
+</html>
